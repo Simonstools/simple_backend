@@ -49,7 +49,7 @@ class Task:
 
 
 class TaskFile:
-    tasks_filename = 'tasks1.json'
+    tasks_filename = 'tasks.json'
 
     def __init__(self, filename=tasks_filename):
         self.filename = filename
@@ -77,8 +77,21 @@ class TaskFile:
     def append_task(self, new_task: Task):
         tasks = self.get_tasks()
         tasks.append(new_task)
+        self.__write(tasks)
+
+    def update_task(self, task_id: int):
+        tasks = self.get_tasks()
+        tasks[task_id].update()
+        self.__write(tasks)
+
+    def pop_task(self, task_id: int):
+        tasks = self.get_tasks()
+        tasks.pop(task_id)
+        self.__write(tasks)
+
+    def write(self, task_list: list):
         new_task_list = list()
-        for task in tasks:
+        for task in task_list:
             new_task_list.append(task.to_dict())
         with open(self.filename, self.mode) as file:
             json.dump(new_task_list, file)
@@ -101,11 +114,9 @@ def create_task(task: str):
 
 @app.put("/tasks/{task_id}")
 def update_task(task_id: int):
-    tasks = task_file.get_tasks()
-    tasks[task_id].update()
+    task_file.update_task(task_id)
 
 
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
-    tasks = task_file.get_tasks()
-    del tasks[task_id]
+    task_file.pop_task(task_id)
