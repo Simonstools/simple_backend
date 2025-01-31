@@ -24,16 +24,16 @@ def get_tasks() -> list[dict]:
     return tasks
 
 @app.post("/tasks")
-def create_task(task: str):
+def create_task(task: str) -> None:
     task_obj = Task.from_string(task)
     task_file.append_task(task_obj)
 
 
 @app.put("/tasks/{task_id}")
-def update_task(task_id: int):
+def update_task(task_id: int) -> None:
     task_file.update_task(task_id)
 
 
 @app.delete("/tasks/{task_id}")
-def delete_task(task_id: int):
+def delete_task(task_id: int) -> None:
     task_file.pop_task(task_id)
