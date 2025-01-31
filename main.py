@@ -4,7 +4,8 @@ import sys
 
 import log
 
-from taskobj import TaskFile, Task
+from jsonbin import JsonBin
+from taskobj import Task
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -15,25 +16,32 @@ logging.basicConfig(
 
 
 app = FastAPI()
-task_file = TaskFile()
+jsonbin = JsonBin()
 
+bin_id = '679d0cfeacd3cb34a8d61b4f'
 
 @app.get("/tasks")
 def get_tasks() -> list[dict]:
-    tasks = [task.to_dict() for task in task_file.get_tasks()]
+    tasks = jsonbin.read_bin(bin_id)['record']
     return tasks
 
 @app.post("/tasks")
 def create_task(task: str):
-    task_obj = Task.from_string(task)
-    task_file.append_task(task_obj)
+    task_dict = Task.from_string(task).to_dict()
+    tasks = jsonbin.read_bin(bin_id)['record']
+    tasks.append(task_dict)
+    jsonbin.update_bin(bin_id, tasks)
 
 
 @app.put("/tasks/{task_id}")
-def update_task(task_id: int):
-    task_file.update_task(task_id)
+def update_task(task_id: int, data: dict):
+    tasks = jsonbin.read_bin(bin_id)['record']
+    tasks[task_id] = data
+    jsonbin.update_bin(bin_id, tasks)
 
 
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
-    task_file.pop_task(task_id)
+    tasks = jsonbin.read_bin(bin_id)['record']
+    del tasks[task_id]
+    jsonbin.update_bin(bin_id, tasks)
