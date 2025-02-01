@@ -1,12 +1,10 @@
-import httpx
-from config import settings
-from fastapi import HTTPException
+import logging
 
-class WrongMethod(Exception):
-    def __init__(self, method_name):
-        self.method_name = method_name
-        self.message = f"Wrong method {method_name=} passed"
-        super().__init__(self.message)
+import httpx
+
+from config import settings
+
+from fastapi import HTTPException
 
 class JsonBin:
     ROOT_URL = settings.JSONBIN_ROOT_URL
@@ -15,9 +13,6 @@ class JsonBin:
         "Content-Type": "application/json"
     }
 
-    def __init__(self):
-        pass
-
     @classmethod
     def __make_request(
             cls,
@@ -25,12 +20,12 @@ class JsonBin:
             route: str,
             data=None
     ) -> dict:
-        if method not in ['GET', 'POST', 'PUT', 'DELETE']:
-            raise WrongMethod(method)
+        #Сделать проверку пути
+        url = f"{cls.ROOT_URL}{route}"
         with httpx.Client() as client:
             resp = client.request(
                 method=method,
-                url=f"{cls.ROOT_URL}{route}",
+                url=url,
                 headers=cls.HEADERS,
                 json=data
             )

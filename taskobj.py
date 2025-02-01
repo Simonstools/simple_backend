@@ -5,13 +5,10 @@ import os
 from exception import WrongTaskFormat
 
 class Task:
-    def __init__(self, id, name, status):
+    def __init__(self, id: int, name: str, status: str):
         self.id = id
         self.name = name
         self.status = status
-
-    def update(self):
-        pass
 
     def to_dict(self):
         return self.__dict__

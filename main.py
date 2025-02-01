@@ -6,6 +6,7 @@ import log
 
 from jsonbin import JsonBin
 from taskobj import Task
+import utils
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -36,12 +37,12 @@ def create_task(task: str):
 @app.put("/tasks/{task_id}")
 def update_task(task_id: int, data: dict):
     tasks = jsonbin.read_bin(bin_id)['record']
-    tasks[task_id] = data
+    utils.update_item(task_id, data, tasks)
     jsonbin.update_bin(bin_id, tasks)
 
 
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
     tasks = jsonbin.read_bin(bin_id)['record']
-    del tasks[task_id]
+    utils.delete_item(task_id, tasks)
     jsonbin.update_bin(bin_id, tasks)
