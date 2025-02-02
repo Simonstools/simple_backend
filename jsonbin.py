@@ -6,6 +6,9 @@ from config import settings
 
 from fastapi import HTTPException
 
+from utils import check_route
+
+
 class JsonBin:
     ROOT_URL = settings.JSONBIN_ROOT_URL
     HEADERS = {
@@ -20,12 +23,11 @@ class JsonBin:
             route: str,
             data=None
     ) -> dict:
-        #Сделать проверку пути
-        url = f"{cls.ROOT_URL}{route}"
         with httpx.Client() as client:
+            route = check_route(route)
             resp = client.request(
                 method=method,
-                url=url,
+                url=f"{cls.ROOT_URL}{route}",
                 headers=cls.HEADERS,
                 json=data
             )

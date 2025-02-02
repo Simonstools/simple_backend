@@ -1,2 +1,0 @@
-class WrongTaskFormat(Exception):
-    pass

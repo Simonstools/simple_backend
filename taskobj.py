@@ -2,8 +2,6 @@ import logging
 import json
 import os
 
-from exception import WrongTaskFormat
-
 class Task:
     def __init__(self, id: int, name: str, status: str):
         self.id = id
@@ -20,7 +18,6 @@ class Task:
             task_dict = json.loads(string)
         except json.decoder.JSONDecodeError:
             logging.error(f"Wrong query {string=}, not json format")
-            raise WrongTaskFormat
         try:
             task_obj = Task(
                 id=task_dict['id'],
@@ -30,7 +27,6 @@ class Task:
             return task_obj
         except KeyError:
             logging.error(f"Wrong key found in query {string=}")
-            raise WrongTaskFormat
 
 
 class TaskFile:
